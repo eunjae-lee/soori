@@ -1,0 +1,26 @@
+{
+  "name": "soori",
+  "description": "some desc",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": {
+    "soori": "./cli.js"
+  },
+  "files": [
+    "cli.js",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "20.5.1",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "commander": "^11.0.0"
+  }
+}
