@@ -8,17 +8,30 @@
   },
   "files": [
     "cli.js",
-    "dist"
+    "dist",
+    "submodules"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --config vite.cli.config.ts && vite build --config vite.lib.config.ts --emptyOutDir false",
     "preview": "vite preview"
+  },
+  "module": "./dist/index.esm.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./*": {
+      "import": "./submodules/*/index.js"
+    }
   },
   "devDependencies": {
     "@types/node": "20.5.1",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-dts": "3.5.2"
   },
   "dependencies": {
     "commander": "^11.0.0"

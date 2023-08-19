@@ -8,8 +8,8 @@ const createProgram = () => {
 
   program.command("build")
     .description("build desc")
-    .action(() => {
-      build();
+    .action(async () => {
+      await build();
     });
 
   return program;
