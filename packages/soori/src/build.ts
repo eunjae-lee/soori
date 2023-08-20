@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { glob } from 'glob';
 import { minimatch } from 'minimatch';
 import fs from 'node:fs/promises';
@@ -7,8 +8,13 @@ import { exists } from './utils';
 
 const GEN_PATH = `./node_modules/soori/submodules`;
 
+// const primary = chalk.hex('#DE4500');
+
+export const info = (message: string) => {
+  console.log('[Soori]', chalk.cyan('[Info]'), message);
+};
 export const error = (message: string) => {
-  console.error('[ERROR]', message);
+  console.log('[Soori]', chalk.bold.red('[ERROR]'), message);
 };
 
 export const resolveConfig = async (): Promise<InternalConfig> => {
@@ -78,17 +84,15 @@ const runBuildWithFiles = async ({
   build: Build;
   files: string[];
 }) => {
-  await Promise.all(
-    files.map(async (file) => {
-      const fileName = path.basename(file);
-      const output = await build.handler({
-        fullPath: file,
-        fileName,
-        fileNameWithoutExt: fileName.slice(0, fileName.lastIndexOf('.')),
-      });
-      await saveOutput(name, output);
-    })
-  );
+  for (const file of files) {
+    const fileName = path.basename(file);
+    const output = await build.handler({
+      fullPath: file,
+      fileName,
+      fileNameWithoutExt: fileName.slice(0, fileName.lastIndexOf('.')),
+    });
+    await saveOutput(name, output);
+  }
 };
 
 const saveOutput = async (name: string, output: BuildOutput) => {
@@ -100,6 +104,7 @@ const saveOutput = async (name: string, output: BuildOutput) => {
   const fullFilePath = `${GEN_PATH}/${name}/${fileName}`;
   await fs.mkdir(path.dirname(fullFilePath), { recursive: true });
   await fs.writeFile(fullFilePath, content);
+  info(`> Generated: ${fullFilePath}`);
 };
 
 export const build = async ({
@@ -120,21 +125,19 @@ export const build = async ({
     config = filterConfigByChangedFile(config, changedFilePath);
   }
 
-  await Promise.allSettled(
-    config.plugins.map(async ({ build, name }) => {
-      await Promise.all(
-        build.map(async (b) => {
-          if (changedFilePath) {
-            await runBuildWithFiles({
-              name,
-              build: b,
-              files: [changedFilePath],
-            });
-          } else {
-            await runBuild({ name, build: b });
-          }
-        })
-      );
-    })
-  );
+  for (const plugin of config.plugins) {
+    const { build, name } = plugin;
+    info(`Applying plugin \`${name}\`...`);
+    for (const b of build) {
+      if (changedFilePath) {
+        await runBuildWithFiles({
+          name,
+          build: b,
+          files: [changedFilePath],
+        });
+      } else {
+        await runBuild({ name, build: b });
+      }
+    }
+  }
 };

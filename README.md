@@ -122,3 +122,8 @@ export default defineConfig({
   plugins: [vite()],
 });
 ```
+
+## TODOs
+
+- [ ] write plugin template with unit tests
+- [ ] write cool plugins
