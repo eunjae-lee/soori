@@ -104,3 +104,18 @@ No proper documentation, because nothing is stable yet. Instead, read
 [this demo config](https://github.com/eunjae-lee/soori/blob/main/apps/demo/soori.config.js),
 and
 [its usage](https://github.com/eunjae-lee/soori/blob/main/apps/demo/src/main.tsx).
+
+## How to generate this submodules based on the config?
+
+You can run `soori build`.
+
+If you're using `vite`, then you can also use Soori's vite plugin to watch and
+build on the fly.
+
+```js
+import { vite } from 'soori';
+
+export default defineConfig({
+  plugins: [vite()],
+});
+```
