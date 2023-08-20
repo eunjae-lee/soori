@@ -1,15 +1,14 @@
 {
   "name": "soori",
-  "description": "some desc",
-  "version": "0.0.1",
+  "description": "Soori allows you to build compile-time libraries.",
+  "version": "0.0.2",
   "type": "module",
   "bin": {
     "soori": "./cli.js"
   },
   "files": [
     "cli.js",
-    "dist",
-    "submodules"
+    "dist"
   ],
   "scripts": {
     "dev": "vite",
