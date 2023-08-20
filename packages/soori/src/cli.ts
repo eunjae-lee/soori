@@ -9,7 +9,7 @@ const createProgram = () => {
   program.command("build")
     .description("build desc")
     .action(async () => {
-      await build();
+      await build({ cleanUp: true });
     });
 
   return program;

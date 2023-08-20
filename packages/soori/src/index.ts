@@ -1,3 +1,2 @@
-import { Config } from "./types";
-
-export const defineConfig = (config: Config) => config;
+export * from "./vite";
+export * from "./config";

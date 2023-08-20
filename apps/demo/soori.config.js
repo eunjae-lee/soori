@@ -1,27 +1,43 @@
 import fs from "fs/promises";
+import path from "path";
 import { defineConfig } from "soori";
 
 export default defineConfig({
   plugins: [
     {
-      output: {
-        type: "eject",
-        path: "src/soori.js",
-      },
-      build: async () => {
-        const file = await fs.readFile("package.json");
-        const pkg = JSON.parse(file.toString());
-        return `export const ver = ${JSON.stringify(pkg.version)};\n`;
+      name: "test",
+      build: {
+        handler: () => {
+          return 'export const name = "Eunjae"';
+        },
       },
     },
     {
-      output: {
-        type: "submodule",
-        name: "test",
-      },
-      build: () => {
-        return 'export const name = "Eunjae"';
-      },
+      name: "json-gen",
+      build: [{
+        watch: ["src/jsons/*.json"],
+        handler: async ({ fullPath, fileNameWithoutExt }) => {
+          const file = await fs.readFile(fullPath);
+          console.log("# file", { fullPath, file: file.toString() });
+          const json = JSON.parse(file.toString());
+          return {
+            fileName: `${fileNameWithoutExt}.js`,
+            content: `export default ${JSON.stringify(json)}`,
+          };
+        },
+      }, {
+        watch: ["src/jsons/*.json"],
+        handler: async () => {
+          const files = await fs.readdir("src/jsons");
+          return {
+            fileName: "index.js",
+            content: files.map((file) => {
+              const fileNameWithoutExt = file.replace(/\.json$/, "");
+              return `export { default as ${fileNameWithoutExt} } from './${fileNameWithoutExt}';`;
+            }).join("\n"),
+          };
+        },
+      }],
     },
   ],
 });
