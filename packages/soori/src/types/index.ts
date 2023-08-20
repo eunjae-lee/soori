@@ -1,16 +1,22 @@
-export type BuildOutput = string | {
-  fileName: string;
-  content: string;
-};
+export type BuildOutput =
+  | string
+  | {
+      fileName: string;
+      content: string;
+    };
 
-export type Build = {
-  handler: () => BuildOutput | Promise<BuildOutput>;
-} | {
-  watch: string[];
-  handler: (
-    params: { fullPath: string; fileName: string; fileNameWithoutExt: string },
-  ) => BuildOutput | Promise<BuildOutput>;
-};
+export type Build =
+  | {
+      handler: () => BuildOutput | Promise<BuildOutput>;
+    }
+  | {
+      watch: string[];
+      handler: (params: {
+        fullPath: string;
+        fileName: string;
+        fileNameWithoutExt: string;
+      }) => BuildOutput | Promise<BuildOutput>;
+    };
 
 export type Plugin = {
   name: string;

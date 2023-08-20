@@ -1,2 +1,2 @@
-export * from "./vite";
-export * from "./config";
+export * from './vite';
+export * from './config';

@@ -1,10 +1,10 @@
-import type { Plugin } from "vite";
+import type { Plugin } from 'vite';
 
-import { build } from "./build";
+import { build } from './build';
 
 export const vite = (): Plugin => {
   return {
-    name: "vite-plugin-soori",
+    name: 'vite-plugin-soori',
     buildStart: async () => {
       await build({ cleanUp: true });
     },
@@ -19,8 +19,8 @@ export const vite = (): Plugin => {
         }
       };
 
-      server.watcher.on("add", listener);
-      server.watcher.on("change", listener);
+      server.watcher.on('add', listener);
+      server.watcher.on('change', listener);
     },
   };
 };
