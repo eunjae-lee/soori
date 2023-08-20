@@ -11,7 +11,7 @@ export const error = (message: string) => {
   console.error("[ERROR]", message);
 };
 
-export const readConfig = async (): Promise<InternalConfig> => {
+export const resolveConfig = async (): Promise<InternalConfig> => {
   const files = await fs.readdir(process.cwd());
   const filename = [/*"soori.config.ts",*/ "soori.config.js"].find((filename) =>
     files.includes(filename)
@@ -32,7 +32,10 @@ export const readConfig = async (): Promise<InternalConfig> => {
   return config;
 };
 
-const filterConfig = (config: InternalConfig, changedFilePath: string) => {
+const filterConfigByChangedFile = (
+  config: InternalConfig,
+  changedFilePath: string,
+) => {
   const isMatchedBuild = (build: Build, changedFilePath: string) => {
     if ("watch" in build) {
       return build.watch.some((pattern) => minimatch(changedFilePath, pattern));
@@ -97,9 +100,9 @@ export const build = async (
     }
   }
 
-  let config = await readConfig();
+  let config = await resolveConfig();
   if (changedFilePath) {
-    config = filterConfig(config, changedFilePath);
+    config = filterConfigByChangedFile(config, changedFilePath);
   }
 
   await Promise.allSettled(config.plugins.map(async ({ build, name }) => {
