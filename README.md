@@ -24,7 +24,7 @@ const functions = ['function1.js', 'function2.js', 'function3.js']; // <- How?
 
 Off the top of your head, you might think about using `fs.readdir()` but once
 it's bundled and deployed, you won't be able to do that. It's better if you can
-handle it before bundling and deploying starts, during compile-time.
+handle it during compile-time before bundling and deploying starts.
 
 What if Soori gives you something like this?
 
