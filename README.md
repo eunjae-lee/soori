@@ -7,8 +7,6 @@ Soori allows you to build compile-time libraries.
 
 ## Problem
 
-A quick quiz:
-
 ```
 pages/
   ㄴapi/
@@ -17,17 +15,18 @@ pages/
     ㄴfunction3.js
 ```
 
-If your repository is like above, how can you have an array of those file names?
+**A quick quiz**: If your repository looks like the example above, how can you
+create an array containing the names of those files?
 
 ```js
 const functions = ['function1.js', 'function2.js', 'function3.js']; // <- How?
 ```
 
-Off the top of your head, you may think about using `fs.readdir()` but once it's
-bundled and deployed, you cannot do that. It's the best if you can deal with it
-on compile-time before bundling and deploying begins.
+Off the top of your head, you might think about using `fs.readdir()` but once
+it's bundled and deployed, you won't be able to do that. It's better if you can
+handle it before bundling and deploying starts, during compile-time.
 
-What if Soori provides something like this?
+What if Soori gives you something like this?
 
 ```js
 import functions from 'soori/my-functions';
@@ -39,15 +38,15 @@ console.log(functions); // ['function1.js', 'function2.js', 'function3.js']
 
 Okay, let's imagine:
 
-- Your website needs to fetch a big chunk of data from an API.
-- You render a part of the response.
-- But you don't need to do it on runtime.
-- It's okay to fetch one at compile-time.
+- Your website needs to fetch a big chunk of data from an API and renders it.
+- But you don't need to do it at runtime.
+- It's okay to fetch it once at compile-time.
 
 How would you implement this? You can write a Soori config that provides you
-`soori/something` module in compile-time.
+`soori/something` module at compile-time.
 
-Or, what if you can write something like tRPC by yourself?
+Or, what if you could write something similar to [tRPC](https://trpc.io/) on
+your own?
 
 ```
 pages/
@@ -68,7 +67,7 @@ try {
 }
 ```
 
-but import methods like this:
+But import methods like this:
 
 ```js
 import { function1 } from 'soori/my-nextjs-apis';
@@ -76,8 +75,10 @@ import { function1 } from 'soori/my-nextjs-apis';
 await function1({ hello: 'world' });
 ```
 
-Wait, what's different from writing a helper method that wraps fetch request and
-error handling? You're very close. But you would have to do something like this:
+> "Wait, what's the difference between writing a helper method that wraps a
+> fetch request and handles errors?"
+
+You're almost there. But you would have to do something like this:
 
 ```js
 // src/server/index.js
@@ -89,28 +90,30 @@ export const function2 = requester({ path: '/api/function2', method: 'GET' })
 export const function3 = ...
 ```
 
-Every time you add one more API endpoint, you have to manually do this.
+And, each time you add an additional API endpoint, you must perform this task
+manually.
 
-## Can I use it for production?
+## Is it production-ready?
 
-This is a proof of concept yet. Don't ever use it for your production. But, the
-beauty of Soori is that it provides submodules in compile-time. If it breaks, it
-will break in compile-time. And you get to see the code generation under
-`node_modules/soori/submodules/`.
+This is still a proof of concept. Never use it for production. However, the
+beauty of Soori is that it offers submodules during compile-time. If there are
+any issues, they will arise during compile-time. You can also view the generated
+code under `node_modules/soori/submodules/`.
 
 ## Configuration
 
-No proper documentation, because nothing is stable yet. Instead, read
-[this demo config](https://github.com/eunjae-lee/soori/blob/main/apps/demo/soori.config.js),
+There is no proper documentation available as things are still unstable.
+Instead, please refer to this
+[this demo configuration](https://github.com/eunjae-lee/soori/blob/main/apps/demo/soori.config.js)
 and
 [its usage](https://github.com/eunjae-lee/soori/blob/main/apps/demo/src/main.tsx).
 
-## How to generate this submodules based on the config?
+## How to generate submodules based on the config?
 
 You can run `soori build`.
 
-If you're using `vite`, then you can also use Soori's vite plugin to watch and
-build on the fly.
+If you're using Vite, you can utilize Soori's Vite plugin for live watching and
+on-the-fly building for dev mode.
 
 ```js
 import { vite } from 'soori';
