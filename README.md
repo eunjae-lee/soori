@@ -1,4 +1,4 @@
-# Soori
+# 🪄 Soori
 
 Soori allows you to build compile-time libraries.
 
