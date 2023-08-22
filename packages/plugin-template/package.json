@@ -1,0 +1,25 @@
+{
+  "name": "soori-plugin-template",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "20.5.1",
+    "soori": "0.0.2",
+    "typescript": "5.0.2",
+    "vite": "4.4.9",
+    "vite-plugin-dts": "3.5.2"
+  }
+}

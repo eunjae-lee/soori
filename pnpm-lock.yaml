@@ -10,6 +10,9 @@ importers:
 
   apps/demo:
     dependencies:
+      '@soori/plugin-json':
+        specifier: 0.0.0
+        version: link:../../packages/plugin-json
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -50,6 +53,46 @@ importers:
       vite:
         specifier: ^4.4.5
         version: 4.4.5(@types/node@20.5.1)
+
+  packages/plugin-json:
+    dependencies:
+      glob:
+        specifier: ^10.3.3
+        version: 10.3.3
+    devDependencies:
+      '@types/node':
+        specifier: 20.5.1
+        version: 20.5.1
+      soori:
+        specifier: 0.0.2
+        version: link:../soori
+      typescript:
+        specifier: 5.0.2
+        version: 5.0.2
+      vite:
+        specifier: 4.4.9
+        version: 4.4.9(@types/node@20.5.1)
+      vite-plugin-dts:
+        specifier: 3.5.2
+        version: 3.5.2(@types/node@20.5.1)(typescript@5.0.2)(vite@4.4.9)
+
+  packages/plugin-template:
+    devDependencies:
+      '@types/node':
+        specifier: 20.5.1
+        version: 20.5.1
+      soori:
+        specifier: 0.0.2
+        version: link:../soori
+      typescript:
+        specifier: 5.0.2
+        version: 5.0.2
+      vite:
+        specifier: 4.4.9
+        version: 4.4.9(@types/node@20.5.1)
+      vite-plugin-dts:
+        specifier: 3.5.2
+        version: 3.5.2(@types/node@20.5.1)(typescript@5.0.2)(vite@4.4.9)
 
   packages/soori:
     dependencies:
@@ -2216,8 +2259,68 @@ packages:
       - supports-color
     dev: true
 
+  /vite-plugin-dts@3.5.2(@types/node@20.5.1)(typescript@5.0.2)(vite@4.4.9):
+    resolution: {integrity: sha512-iKc851+jdHEoN1ifbOEsoMs+/Zg26PE1EyO2Jc+4apOWRoaeK2zRJnaStgUuJaVaEcAjTqWzpNgCAMq7iO6DWA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      typescript: '*'
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+    dependencies:
+      '@microsoft/api-extractor': 7.36.4(@types/node@20.5.1)
+      '@rollup/pluginutils': 5.0.3
+      '@vue/language-core': 1.8.8(typescript@5.0.2)
+      debug: 4.3.4
+      kolorist: 1.8.0
+      typescript: 5.0.2
+      vite: 4.4.9(@types/node@20.5.1)
+      vue-tsc: 1.8.8(typescript@5.0.2)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+    dev: true
+
   /vite@4.4.5(@types/node@20.5.1):
     resolution: {integrity: sha512-4m5kEtAWHYr0O1Fu7rZp64CfO1PsRGZlD3TAB32UmQlpd7qg15VF7ROqGN5CyqN7HFuwr7ICNM2+fDWRqFEKaA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 20.5.1
+      esbuild: 0.18.20
+      postcss: 8.4.28
+      rollup: 3.28.0
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
+
+  /vite@4.4.9(@types/node@20.5.1):
+    resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:

@@ -125,5 +125,4 @@ export default defineConfig({
 
 ## TODOs
 
-- [ ] write plugin template with unit tests
 - [ ] write cool plugins
