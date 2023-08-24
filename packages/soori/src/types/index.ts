@@ -8,6 +8,10 @@ export type Result<Data = unknown, Err = string> =
     error: Err;
   };
 
+export type BuildOutputs = {
+  [fileName: string]: string;
+};
+
 export type BuildOutput = {
   fileName: string;
   content: string;

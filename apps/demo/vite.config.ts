@@ -8,13 +8,13 @@ export default defineConfig({
   plugins: [react(), vite()],
   resolve: {
     alias:
-      process.env.NODE_ENV === 'development'
-        ? [
+      process.env.NODE_ENV === 'production'
+        ? []
+        : [
           {
             find: /^soori$/,
             replacement: path.resolve(__dirname, '../soori/src/index.ts'),
           },
-        ]
-        : [],
+        ],
   },
 });

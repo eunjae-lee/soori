@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { glob } from 'glob';
-import type { Build, BuildOutput, InternalPlugin, OutputMode } from '../types';
+import type { Build, BuildOutputs, InternalPlugin, OutputMode } from '../types';
 import { info } from '../utils/log';
 import { saveOutput } from './output';
 
@@ -11,12 +11,16 @@ export const runPlugins = async ({
   plugins: InternalPlugin[];
   outputMode: OutputMode;
 }) => {
-  const outputs: BuildOutput[] = [];
+  console.log('# hey!');
+  let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
     const { name } = plugin;
     info(`Applying plugin \`${name}\`...`);
     for (const build of plugin.build) {
-      outputs.push(...(await runBuild({ name, build, outputMode })));
+      outputs = {
+        ...outputs,
+        ...(await runBuild({ name, build, outputMode })),
+      };
     }
   }
   return outputs;
@@ -31,19 +35,20 @@ export const runPluginsWithFiles = async ({
   files: string[];
   outputMode: OutputMode;
 }) => {
-  const outputs: BuildOutput[] = [];
+  let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
     const { name } = plugin;
     info(`Applying plugin \`${name}\`...`);
     for (const build of plugin.build) {
-      outputs.push(
+      outputs = {
+        ...outputs,
         ...(await runBuildWithFiles({
           name,
           build,
           files,
           outputMode,
-        }))
-      );
+        })),
+      };
     }
   }
   return outputs;
@@ -58,15 +63,16 @@ export const runBuild = async ({
   build: Build;
   outputMode: OutputMode;
 }) => {
-  const outputs: BuildOutput[] = [];
+  let outputs: BuildOutputs = {};
   if ('watch' in build) {
     const files = await glob(build.watch);
-    outputs.push(
-      ...(await runBuildWithFiles({ name, build, files, outputMode }))
-    );
+    outputs = {
+      ...outputs,
+      ...(await runBuildWithFiles({ name, build, files, outputMode })),
+    };
   } else {
     const output = await build.handler();
-    outputs.push(output);
+    outputs[output.fileName] = output.content;
     if (outputMode === 'save-and-return') {
       await saveOutput({ name, output });
     }
@@ -85,7 +91,7 @@ export const runBuildWithFiles = async ({
   files: string[];
   outputMode: OutputMode;
 }) => {
-  const outputs: BuildOutput[] = [];
+  let outputs: BuildOutputs = {};
   for (const file of files) {
     const fileName = path.basename(file);
     const output = await build.handler({
@@ -93,7 +99,7 @@ export const runBuildWithFiles = async ({
       fileName,
       fileNameWithoutExt: fileName.slice(0, fileName.lastIndexOf('.')),
     });
-    outputs.push(output);
+    outputs[output.fileName] = output.content;
     if (outputMode === 'save-and-return') {
       await saveOutput({ name, output });
     }
