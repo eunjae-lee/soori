@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -20,7 +22,8 @@
     "soori": "0.0.2",
     "typescript": "5.0.2",
     "vite": "4.4.9",
-    "vite-plugin-dts": "3.5.2"
+    "vite-plugin-dts": "3.5.2",
+    "vitest": "0.34.2"
   },
   "dependencies": {
     "glob": "^10.3.3"

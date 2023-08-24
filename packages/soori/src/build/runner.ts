@@ -1,0 +1,102 @@
+import path from 'node:path';
+import { glob } from 'glob';
+import type { Build, BuildOutput, InternalPlugin, OutputMode } from '../types';
+import { info } from '../utils/log';
+import { saveOutput } from './output';
+
+export const runPlugins = async ({
+  plugins,
+  outputMode,
+}: {
+  plugins: InternalPlugin[];
+  outputMode: OutputMode;
+}) => {
+  const outputs: BuildOutput[] = [];
+  for (const plugin of plugins) {
+    const { name } = plugin;
+    info(`Applying plugin \`${name}\`...`);
+    for (const build of plugin.build) {
+      outputs.push(...(await runBuild({ name, build, outputMode })));
+    }
+  }
+  return outputs;
+};
+
+export const runPluginsWithFiles = async ({
+  plugins,
+  files,
+  outputMode,
+}: {
+  plugins: InternalPlugin[];
+  files: string[];
+  outputMode: OutputMode;
+}) => {
+  const outputs: BuildOutput[] = [];
+  for (const plugin of plugins) {
+    const { name } = plugin;
+    info(`Applying plugin \`${name}\`...`);
+    for (const build of plugin.build) {
+      outputs.push(
+        ...(await runBuildWithFiles({
+          name,
+          build,
+          files,
+          outputMode,
+        }))
+      );
+    }
+  }
+  return outputs;
+};
+
+export const runBuild = async ({
+  name,
+  build,
+  outputMode,
+}: {
+  name: string;
+  build: Build;
+  outputMode: OutputMode;
+}) => {
+  const outputs: BuildOutput[] = [];
+  if ('watch' in build) {
+    const files = await glob(build.watch);
+    outputs.push(
+      ...(await runBuildWithFiles({ name, build, files, outputMode }))
+    );
+  } else {
+    const output = await build.handler();
+    outputs.push(output);
+    if (outputMode === 'save-and-return') {
+      await saveOutput({ name, output });
+    }
+  }
+  return outputs;
+};
+
+export const runBuildWithFiles = async ({
+  name,
+  build,
+  files,
+  outputMode,
+}: {
+  name: string;
+  build: Build;
+  files: string[];
+  outputMode: OutputMode;
+}) => {
+  const outputs: BuildOutput[] = [];
+  for (const file of files) {
+    const fileName = path.basename(file);
+    const output = await build.handler({
+      fullPath: file,
+      fileName,
+      fileNameWithoutExt: fileName.slice(0, fileName.lastIndexOf('.')),
+    });
+    outputs.push(output);
+    if (outputMode === 'save-and-return') {
+      await saveOutput({ name, output });
+    }
+  }
+  return outputs;
+};

@@ -1,22 +1,32 @@
-export type BuildOutput =
-  | string
+export type Result<Data = unknown, Err = string> =
   | {
-      fileName: string;
-      content: string;
-    };
+    ok: true;
+    data: Data;
+  }
+  | {
+    ok: false;
+    error: Err;
+  };
+
+export type BuildOutput = {
+  fileName: string;
+  content: string;
+};
 
 export type Build =
   | {
-      handler: () => BuildOutput | Promise<BuildOutput>;
-    }
+    handler: () => BuildOutput | Promise<BuildOutput>;
+  }
   | {
-      watch: string[];
-      handler: (params: {
-        fullPath: string;
-        fileName: string;
-        fileNameWithoutExt: string;
-      }) => BuildOutput | Promise<BuildOutput>;
-    };
+    watch: string[];
+    handler: (params: {
+      fullPath: string;
+      fileName: string;
+      fileNameWithoutExt: string;
+    }) => BuildOutput | Promise<BuildOutput>;
+  };
+
+export type OutputMode = 'save-and-return' | 'return-only';
 
 export type Plugin = {
   name: string;

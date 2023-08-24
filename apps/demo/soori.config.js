@@ -7,7 +7,10 @@ export default defineConfig({
       name: 'test',
       build: {
         handler: () => {
-          return 'export const name = "Eunjae"';
+          return {
+            fileName: 'index.js',
+            content: 'export const name = "Eunjae"',
+          };
         },
       },
     },

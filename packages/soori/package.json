@@ -15,6 +15,7 @@
     "build": "tsc && vite build --config vite.cli.config.ts && vite build --config vite.lib.config.ts --emptyOutDir false",
     "preview": "vite preview"
   },
+  "main": "./dist/index.esm.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/src/index.d.ts",
   "exports": {
