@@ -11,7 +11,6 @@ export const runPlugins = async ({
   plugins: InternalPlugin[];
   outputMode: OutputMode;
 }) => {
-  console.log('# hey!');
   let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
     const { name } = plugin;

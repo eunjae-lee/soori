@@ -96,6 +96,9 @@ importers:
       vite-plugin-dts:
         specifier: 3.5.2
         version: 3.5.2(@types/node@20.5.1)(typescript@5.0.2)(vite@4.4.9)
+      vitest:
+        specifier: 0.34.2
+        version: 0.34.2
 
   packages/soori:
     dependencies:

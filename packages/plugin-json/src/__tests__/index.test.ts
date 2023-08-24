@@ -1,11 +1,11 @@
-import { runBuild, runPlugins } from 'soori';
-import path from 'path';
-import json from '../index';
+import { testPlugin } from 'soori';
+import path from 'node:path';
+import json from '..';
 
 describe('json', () => {
   it('runs plugins correctly', async () => {
-    const outputs = await runBuild({
-      name: 'test-build',
+    const outputs = await testPlugin({
+      name: 'test-plugin',
       build: {
         handler: () => {
           return {
@@ -14,9 +14,7 @@ describe('json', () => {
           };
         },
       },
-      outputMode: 'return-only',
     });
-
     expect(outputs).toMatchInlineSnapshot(`
       {
         "index.js": "export const name = \\"Eunjae\\"",
@@ -25,14 +23,11 @@ describe('json', () => {
   });
 
   it('generates jsons correctly', async () => {
-    const outputs = await runPlugins({
-      plugins: [
-        json({
-          watch: [path.resolve(__dirname, 'fixture1') + '/*.json'],
-        }),
-      ],
-      outputMode: 'return-only',
-    });
+    const outputs = await testPlugin(
+      json({
+        watch: [path.resolve(__dirname, 'fixture1') + '/*.json'],
+      })
+    );
     expect(outputs).toMatchInlineSnapshot(`
       {
         "index.ts": "export * as test2 from './test2';
@@ -44,14 +39,11 @@ describe('json', () => {
   });
 
   it('generates nested jsons correctly', async () => {
-    const outputs = await runPlugins({
-      plugins: [
-        json({
-          watch: [path.resolve(__dirname, 'fixture2') + '/**/*.json'],
-        }),
-      ],
-      outputMode: 'return-only',
-    });
+    const outputs = await testPlugin(
+      json({
+        watch: [path.resolve(__dirname, 'fixture2') + '/**/*.json'],
+      })
+    );
     expect(outputs).toMatchInlineSnapshot(`
       {
         "index.ts": "export * as test2 from './test2';
