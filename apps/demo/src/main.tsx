@@ -4,6 +4,9 @@ import App from './App.tsx';
 import './index.css';
 import { name } from 'soori/test';
 import { cat1 } from 'soori/json-gen';
+// import about from './md/about.md';
+
+// console.log({ about });
 
 console.log('# name:', name);
 console.log('# cat1:', cat1.name);

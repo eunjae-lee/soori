@@ -1,8 +1,35 @@
 import { defineConfig } from 'soori';
 import json from '@soori/plugin-json';
+import markdown from 'unplugin-vue-markdown/vite';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+
+const convertVitePluginToSoori = ({ name, watch, plugin, outputExtension }) => {
+  return {
+    name,
+    build: {
+      watch,
+      handler: async ({ fullPath, fileNameWithoutExt }) => {
+        const raw = (await fs.readFile(fullPath)).toString();
+        const id = path.resolve(fullPath);
+        const result = await plugin.transform(raw, id);
+        return {
+          fileName: `${fileNameWithoutExt}.${outputExtension}`,
+          content: result.code,
+        };
+      },
+    },
+  };
+};
 
 export default defineConfig({
   plugins: [
+    convertVitePluginToSoori({
+      name: 'markdownInVue',
+      watch: ['src/md/*.md'],
+      plugin: markdown(),
+      outputExtension: 'vue',
+    }),
     {
       name: 'test',
       build: {
