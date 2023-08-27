@@ -1,7 +1,13 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { minimatch } from 'minimatch';
-import type { Build, InternalConfig, Plugin, Result } from '../types';
+import type {
+  Build,
+  BuildPerEachFile,
+  InternalConfig,
+  Plugin,
+  Result,
+} from '../types';
 
 export const resolveConfig = async (): Promise<Result<InternalConfig>> => {
   const files = await fs.readdir(process.cwd());
@@ -31,9 +37,9 @@ export const resolveConfig = async (): Promise<Result<InternalConfig>> => {
 export const filterConfigByChangedFile = (
   config: InternalConfig,
   changedFilePath: string
-) => {
-  const isMatchedBuild = (build: Build, changedFilePath: string) => {
-    if ('watch' in build) {
+): InternalConfig<BuildPerEachFile> => {
+  const isMatchedBuild = (build: Build): build is BuildPerEachFile => {
+    if ('handleEach' in build) {
       return build.watch.some((pattern) => minimatch(changedFilePath, pattern));
     } else {
       return false;
@@ -46,7 +52,7 @@ export const filterConfigByChangedFile = (
       .map((plugin) => {
         return {
           ...plugin,
-          build: plugin.build.filter((b) => isMatchedBuild(b, changedFilePath)),
+          build: plugin.build.filter(isMatchedBuild),
         };
       })
       .filter((plugin) => plugin.build.length > 0),

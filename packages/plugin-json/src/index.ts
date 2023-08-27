@@ -1,4 +1,4 @@
-import type { Plugin } from 'soori';
+import { definePlugin } from 'soori';
 import { glob } from 'glob';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -8,13 +8,13 @@ type Options = {
   watch: string[];
 };
 
-export default (options: Options) => {
-  const plugin: Plugin = {
+export default (options: Options) =>
+  definePlugin({
     name: options.name ?? 'json',
     build: [
       {
         watch: options.watch,
-        handler: async ({ fullPath, fileNameWithoutExt }) => {
+        handleEach: async ({ fullPath, fileNameWithoutExt }) => {
           const file = await fs.readFile(fullPath);
           const json = JSON.parse(file.toString());
           return {
@@ -29,7 +29,7 @@ export default (options: Options) => {
       },
       {
         watch: options.watch,
-        handler: async () => {
+        handle: async () => {
           const files = await glob(options.watch);
           return {
             fileName: 'index.ts',
@@ -48,6 +48,4 @@ export default (options: Options) => {
         },
       },
     ],
-  };
-  return plugin;
-};
+  });

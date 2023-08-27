@@ -7,14 +7,27 @@ import path from 'path';
 export default defineConfig({
   plugins: [react(), vite()],
   resolve: {
-    alias:
-      process.env.NODE_ENV === 'production'
-        ? []
-        : [
-          {
-            find: /^soori$/,
-            replacement: path.resolve(__dirname, '../soori/src/index.ts'),
-          },
-        ],
+    alias: [
+      {
+        find: /^soori$/,
+        replacement: path.resolve(__dirname, '../soori/src/index.ts'),
+      },
+      {
+        find: /^@soori\/plugin\-json$/,
+        replacement: path.resolve(
+          __dirname,
+          '../../packages/plugin-json/src/index.ts'
+        ),
+      },
+    ],
+    //   alias:
+    //     process.env.NODE_ENV === 'production'
+    //       ? []
+    //       : [
+    //           {
+    //             find: /^soori$/,
+    //             replacement: path.resolve(__dirname, '../soori/src/index.tssss'),
+    //           },
+    //         ],
   },
 });

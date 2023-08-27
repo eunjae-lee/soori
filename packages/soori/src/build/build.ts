@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import { exists } from '../utils';
 import { filterConfigByChangedFile, resolveConfig } from './config';
 import { error } from '../utils/log';
-import { runPlugins, runPluginsWithFiles } from './runner';
+import { runPlugins, runPluginsPerEachFile } from './runner';
 import { GEN_PATH } from './output';
 import { OutputMode } from '../types';
 
@@ -29,7 +29,7 @@ export const build = async ({
   const config = resolveConfigResult.data;
 
   if (changedFilePath) {
-    return await runPluginsWithFiles({
+    return await runPluginsPerEachFile({
       plugins: filterConfigByChangedFile(config, changedFilePath).plugins,
       files: [changedFilePath],
       outputMode,

@@ -1,6 +1,12 @@
 import path from 'node:path';
 import { glob } from 'glob';
-import type { Build, BuildOutputs, InternalPlugin, OutputMode } from '../types';
+import type {
+  Build,
+  BuildOutputs,
+  BuildPerEachFile,
+  InternalPlugin,
+  OutputMode,
+} from '../types';
 import { info } from '../utils/log';
 import { saveOutput } from './output';
 
@@ -25,12 +31,12 @@ export const runPlugins = async ({
   return outputs;
 };
 
-export const runPluginsWithFiles = async ({
+export const runPluginsPerEachFile = async ({
   plugins,
   files,
   outputMode,
 }: {
-  plugins: InternalPlugin[];
+  plugins: InternalPlugin<BuildPerEachFile>[];
   files: string[];
   outputMode: OutputMode;
 }) => {
@@ -41,7 +47,7 @@ export const runPluginsWithFiles = async ({
     for (const build of plugin.build) {
       outputs = {
         ...outputs,
-        ...(await runBuildWithFiles({
+        ...(await runBuildPerEachFile({
           name,
           build,
           files,
@@ -63,14 +69,14 @@ export const runBuild = async ({
   outputMode: OutputMode;
 }) => {
   let outputs: BuildOutputs = {};
-  if ('watch' in build) {
+  if ('handleEach' in build) {
     const files = await glob(build.watch);
     outputs = {
       ...outputs,
-      ...(await runBuildWithFiles({ name, build, files, outputMode })),
+      ...(await runBuildPerEachFile({ name, build, files, outputMode })),
     };
   } else {
-    const output = await build.handler();
+    const output = await build.handle();
     outputs[output.fileName] = output.content;
     if (outputMode === 'save-and-return') {
       await saveOutput({ name, output });
@@ -79,22 +85,22 @@ export const runBuild = async ({
   return outputs;
 };
 
-export const runBuildWithFiles = async ({
+export const runBuildPerEachFile = async ({
   name,
   build,
   files,
   outputMode,
 }: {
   name: string;
-  build: Build;
+  build: BuildPerEachFile;
   files: string[];
   outputMode: OutputMode;
 }) => {
   let outputs: BuildOutputs = {};
   for (const file of files) {
     const fileName = path.basename(file);
-    const output = await build.handler({
-      fullPath: file,
+    const output = await build.handleEach({
+      fullPath: path.resolve(file),
       fileName,
       fileNameWithoutExt: fileName.slice(0, fileName.lastIndexOf('.')),
     });

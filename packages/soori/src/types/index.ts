@@ -17,18 +17,21 @@ export type BuildOutput = {
   content: string;
 };
 
-export type Build =
-  | {
-    handler: () => BuildOutput | Promise<BuildOutput>;
-  }
-  | {
-    watch: string[];
-    handler: (params: {
-      fullPath: string;
-      fileName: string;
-      fileNameWithoutExt: string;
-    }) => BuildOutput | Promise<BuildOutput>;
-  };
+export type BuildAll = {
+  watch?: string[];
+  handle: () => BuildOutput | Promise<BuildOutput>;
+};
+
+export type BuildPerEachFile = {
+  watch: string[];
+  handleEach: (params: {
+    fullPath: string;
+    fileName: string;
+    fileNameWithoutExt: string;
+  }) => BuildOutput | Promise<BuildOutput>;
+};
+
+export type Build = BuildAll | BuildPerEachFile;
 
 export type OutputMode = 'save-and-return' | 'return-only';
 
@@ -37,15 +40,15 @@ export type Plugin = {
   build: Build | Build[];
 };
 
-export type InternalPlugin = {
+export type InternalPlugin<TBuild = Build> = {
   name: string;
-  build: Build[];
+  build: TBuild[];
 };
 
 export type Config = {
   plugins: Plugin[];
 };
 
-export type InternalConfig = {
-  plugins: InternalPlugin[];
+export type InternalConfig<TBuild = Build> = {
+  plugins: InternalPlugin<TBuild>[];
 };

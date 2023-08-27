@@ -18,6 +18,7 @@
     }
   },
   "devDependencies": {
+    "@types/glob": "8.1.0",
     "@types/node": "20.5.1",
     "soori": "0.0.2",
     "typescript": "5.0.2",

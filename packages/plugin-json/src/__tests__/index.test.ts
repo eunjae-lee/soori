@@ -7,7 +7,7 @@ describe('json', () => {
     const outputs = await testPlugin({
       name: 'test-plugin',
       build: {
-        handler: () => {
+        handle: () => {
           return {
             fileName: 'index.js',
             content: 'export const name = "Eunjae"',
