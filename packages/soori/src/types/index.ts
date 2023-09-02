@@ -37,11 +37,13 @@ export type OutputMode = 'save-and-return' | 'return-only';
 
 export type Plugin = {
   name: string;
+  outputDir?: string;
   build: Build | Build[];
 };
 
 export type InternalPlugin<TBuild = Build> = {
   name: string;
+  outputDir: string;
   build: TBuild[];
 };
 

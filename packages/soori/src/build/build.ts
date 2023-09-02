@@ -3,8 +3,7 @@ import { exists } from '../utils';
 import { filterConfigByChangedFile, resolveConfig } from './config';
 import { error } from '../utils/log';
 import { runPlugins, runPluginsPerEachFile } from './runner';
-import { GEN_PATH } from './output';
-import { OutputMode } from '../types';
+import { InternalPlugin, OutputMode } from '../types';
 
 export const build = async ({
   cleanUp,
@@ -15,11 +14,16 @@ export const build = async ({
   changedFilePath?: string;
   outputMode?: OutputMode;
 }) => {
-  if (cleanUp) {
-    if (await exists(GEN_PATH)) {
-      await fs.rm(GEN_PATH, { recursive: true, force: true });
+  const cleanUpOutputDirs = async (plugins: InternalPlugin[]) => {
+    if (!cleanUp) {
+      return;
     }
-  }
+    for (const plugin of plugins) {
+      if (await exists(plugin.outputDir)) {
+        await fs.rm(plugin.outputDir, { recursive: true, force: true });
+      }
+    }
+  };
 
   let resolveConfigResult = await resolveConfig();
   if (!resolveConfigResult.ok) {
@@ -29,12 +33,15 @@ export const build = async ({
   const config = resolveConfigResult.data;
 
   if (changedFilePath) {
+    const plugins = filterConfigByChangedFile(config, changedFilePath).plugins;
+    await cleanUpOutputDirs(plugins);
     return await runPluginsPerEachFile({
-      plugins: filterConfigByChangedFile(config, changedFilePath).plugins,
+      plugins,
       files: [changedFilePath],
       outputMode,
     });
   } else {
+    await cleanUpOutputDirs(config.plugins);
     return await runPlugins({
       plugins: config.plugins,
       outputMode,

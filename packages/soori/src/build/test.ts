@@ -5,6 +5,7 @@ export const testPlugin = async (plugin: Plugin) => {
   return await runPlugins({
     plugins: [
       {
+        outputDir: '',
         ...plugin,
         build: Array.isArray(plugin.build) ? plugin.build : [plugin.build],
       },

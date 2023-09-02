@@ -19,12 +19,15 @@ export const runPlugins = async ({
 }) => {
   let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
-    const { name } = plugin;
-    info(`Applying plugin \`${name}\`...`);
+    info(`Applying plugin \`${plugin.name}\`...`);
     for (const build of plugin.build) {
       outputs = {
         ...outputs,
-        ...(await runBuild({ name, build, outputMode })),
+        ...(await runBuild({
+          build,
+          outputDir: plugin.outputDir,
+          outputMode,
+        })),
       };
     }
   }
@@ -48,9 +51,9 @@ export const runPluginsPerEachFile = async ({
       outputs = {
         ...outputs,
         ...(await runBuildPerEachFile({
-          name,
           build,
           files,
+          outputDir: plugin.outputDir,
           outputMode,
         })),
       };
@@ -60,12 +63,12 @@ export const runPluginsPerEachFile = async ({
 };
 
 export const runBuild = async ({
-  name,
   build,
+  outputDir,
   outputMode,
 }: {
-  name: string;
   build: Build;
+  outputDir: string;
   outputMode: OutputMode;
 }) => {
   let outputs: BuildOutputs = {};
@@ -73,28 +76,28 @@ export const runBuild = async ({
     const files = await glob(build.watch);
     outputs = {
       ...outputs,
-      ...(await runBuildPerEachFile({ name, build, files, outputMode })),
+      ...(await runBuildPerEachFile({ build, files, outputMode, outputDir })),
     };
   } else {
     const output = await build.handle();
     outputs[output.fileName] = output.content;
     if (outputMode === 'save-and-return') {
-      await saveOutput({ name, output });
+      await saveOutput({ outputDir, output });
     }
   }
   return outputs;
 };
 
 export const runBuildPerEachFile = async ({
-  name,
   build,
   files,
   outputMode,
+  outputDir,
 }: {
-  name: string;
   build: BuildPerEachFile;
   files: string[];
   outputMode: OutputMode;
+  outputDir: string;
 }) => {
   let outputs: BuildOutputs = {};
   for (const file of files) {
@@ -106,7 +109,7 @@ export const runBuildPerEachFile = async ({
     });
     outputs[output.fileName] = output.content;
     if (outputMode === 'save-and-return') {
-      await saveOutput({ name, output });
+      await saveOutput({ outputDir, output });
     }
   }
   return outputs;
