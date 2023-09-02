@@ -12,17 +12,25 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --config vite.cli.config.ts && vite build --config vite.lib.config.ts --emptyOutDir false",
+    "build": "unbuild",
+    "build_": "tsc && vite build --config vite.cli.config.ts && vite build --config vite.lib.config.ts --emptyOutDir false",
     "preview": "vite preview"
   },
-  "main": "./dist/index.esm.js",
-  "module": "./dist/index.esm.js",
-  "types": "./dist/src/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.esm.js",
-      "types": "./dist/src/index.d.ts"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
     },
+    "./vite": {
+      "import": "./dist/vite.mjs",
+      "require": "./dist/vite.cjs",
+      "types": "./dist/vite.d.ts"
+    },
+    "./package.json": "./package.json",
     "./*": {
       "import": "./submodules/*/index.js"
     }
@@ -30,8 +38,8 @@
   "devDependencies": {
     "@types/node": "20.5.1",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
-    "vite-plugin-dts": "3.5.2"
+    "unbuild": "2.0.0",
+    "vite": "4.4.9"
   },
   "dependencies": {
     "chalk": "^5.3.0",

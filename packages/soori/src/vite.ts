@@ -2,7 +2,7 @@ import type { Plugin } from 'vite';
 
 import { build } from './build';
 
-export const vite = (): Plugin => {
+export const soori = (): Plugin => {
   return {
     name: 'vite-plugin-soori',
     buildStart: async () => {
