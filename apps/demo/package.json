@@ -14,7 +14,7 @@
     "@soori/plugin-json": "0.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "soori": "0.0.2"
+    "soori": "*"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
@@ -26,7 +26,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "5.1.6",
-    "unplugin-vue-markdown": "0.24.2",
     "vite": "^4.4.5"
   }
 }

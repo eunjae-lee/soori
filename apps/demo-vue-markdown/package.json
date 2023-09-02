@@ -1,0 +1,20 @@
+{
+  "name": "demo-vue-markdown",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.3.4",
+    "soori": "*"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "unplugin-vue-markdown": "0.24.2",
+    "vite": "^4.4.5"
+  }
+}
