@@ -8,20 +8,8 @@ export default defineConfig({
     globals: true,
   },
   plugins: [dts()],
-  resolve: {
-    alias:
-      process.env.NODE_ENV === 'production'
-        ? []
-        : [
-          {
-            find: /^soori$/,
-            replacement: path.resolve(__dirname, '../soori/src/index.ts'),
-          },
-        ],
-  },
   build: {
     lib: {
-      // Could also be a dictionary or array of multiple entry points
       entry: 'src/index.ts',
       fileName: 'index',
     },
