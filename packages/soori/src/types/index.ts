@@ -33,15 +33,23 @@ export type BuildPerEachFile = {
 
 export type Build = BuildAll | BuildPerEachFile;
 
+export type InternalOutput = {
+  dir: string;
+  onBuildStart?: (opts: { dir: string }) => Promise<void>;
+  onBuildEnd?: (opts: { dir: string }) => Promise<void>;
+};
+
+export type Output = Partial<InternalOutput>;
+
 export type Plugin = {
   name: string;
-  outputDir?: string;
+  output?: Output;
   build: Build | Build[];
 };
 
 export type InternalPlugin<TBuild = Build> = {
   name: string;
-  outputDir: string;
+  output: InternalOutput;
   build: TBuild[];
 };
 

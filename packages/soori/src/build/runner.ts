@@ -19,16 +19,18 @@ export const runPlugins = async ({
   let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
     info(`Applying plugin \`${plugin.name}\`...`);
+    await plugin.output.onBuildStart?.({ dir: plugin.output.dir });
     for (const build of plugin.build) {
       outputs = {
         ...outputs,
         ...(await runBuild({
           build,
-          outputDir: plugin.outputDir,
+          outputDir: plugin.output.dir,
           dryOutput,
         })),
       };
     }
+    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir });
   }
   return outputs;
 };
@@ -46,17 +48,19 @@ export const runPluginsPerEachFile = async ({
   for (const plugin of plugins) {
     const { name } = plugin;
     info(`Applying plugin \`${name}\`...`);
+    await plugin.output.onBuildStart?.({ dir: plugin.output.dir });
     for (const build of plugin.build) {
       outputs = {
         ...outputs,
         ...(await runBuildPerEachFile({
           build,
           files,
-          outputDir: plugin.outputDir,
+          outputDir: plugin.output.dir,
           dryOutput,
         })),
       };
     }
+    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir });
   }
   return outputs;
 };

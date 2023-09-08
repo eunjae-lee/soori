@@ -14,13 +14,15 @@ export const build = async ({
   changedFilePath?: string;
   dryOutput?: boolean;
 }) => {
-  const cleanUpOutputDirs = async (plugins: InternalPlugin[]) => {
-    if (!cleanUp) {
-      return;
-    }
+  const prepareOutputDirs = async (plugins: InternalPlugin[]) => {
     for (const plugin of plugins) {
-      if (await exists(plugin.outputDir)) {
-        await fs.rm(plugin.outputDir, { recursive: true, force: true });
+      if (await exists(plugin.output.dir)) {
+        if (cleanUp) {
+          await fs.rm(plugin.output.dir, { recursive: true, force: true });
+          await fs.mkdir(plugin.output.dir, { recursive: true });
+        }
+      } else {
+        await fs.mkdir(plugin.output.dir, { recursive: true });
       }
     }
   };
@@ -34,14 +36,14 @@ export const build = async ({
 
   if (changedFilePath) {
     const plugins = filterConfigByChangedFile(config, changedFilePath).plugins;
-    await cleanUpOutputDirs(plugins);
+    await prepareOutputDirs(plugins);
     return await runPluginsPerEachFile({
       plugins,
       files: [changedFilePath],
       dryOutput,
     });
   } else {
-    await cleanUpOutputDirs(config.plugins);
+    await prepareOutputDirs(config.plugins);
     return await runPlugins({
       plugins: config.plugins,
       dryOutput,

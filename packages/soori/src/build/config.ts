@@ -24,9 +24,12 @@ export const resolveConfig = async (): Promise<Result<InternalConfig>> => {
 
   let config = (await import(path.resolve(filename))).default;
   config.plugins.forEach((plugin: Plugin) => {
-    plugin.outputDir = path.resolve(
-      plugin.outputDir ?? `./node_modules/soori/submodules/${plugin.name}`
-    );
+    const pluginOutputDir = `./node_modules/soori/submodules/${plugin.name}`;
+    if (!plugin.output) {
+      plugin.output = {};
+    }
+    plugin.output.dir = path.resolve(plugin.output.dir ?? pluginOutputDir);
+
     if (!Array.isArray(plugin.build)) {
       plugin.build = [plugin.build];
     }

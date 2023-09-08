@@ -5,8 +5,8 @@ export const testPlugin = async (plugin: Plugin) => {
   return await runPlugins({
     plugins: [
       {
-        outputDir: '',
         ...plugin,
+        output: { dir: plugin.output?.dir ?? '', ...plugin.output },
         build: Array.isArray(plugin.build) ? plugin.build : [plugin.build],
       },
     ],
