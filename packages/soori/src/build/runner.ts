@@ -5,17 +5,16 @@ import type {
   BuildOutputs,
   BuildPerEachFile,
   InternalPlugin,
-  OutputMode,
 } from '../types';
 import { info } from '../utils/log';
 import { saveOutput } from './output';
 
 export const runPlugins = async ({
   plugins,
-  outputMode,
+  dryOutput,
 }: {
   plugins: InternalPlugin[];
-  outputMode: OutputMode;
+  dryOutput: boolean;
 }) => {
   let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
@@ -26,7 +25,7 @@ export const runPlugins = async ({
         ...(await runBuild({
           build,
           outputDir: plugin.outputDir,
-          outputMode,
+          dryOutput,
         })),
       };
     }
@@ -37,11 +36,11 @@ export const runPlugins = async ({
 export const runPluginsPerEachFile = async ({
   plugins,
   files,
-  outputMode,
+  dryOutput,
 }: {
   plugins: InternalPlugin<BuildPerEachFile>[];
   files: string[];
-  outputMode: OutputMode;
+  dryOutput: boolean;
 }) => {
   let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
@@ -54,7 +53,7 @@ export const runPluginsPerEachFile = async ({
           build,
           files,
           outputDir: plugin.outputDir,
-          outputMode,
+          dryOutput,
         })),
       };
     }
@@ -65,23 +64,23 @@ export const runPluginsPerEachFile = async ({
 export const runBuild = async ({
   build,
   outputDir,
-  outputMode,
+  dryOutput,
 }: {
   build: Build;
   outputDir: string;
-  outputMode: OutputMode;
+  dryOutput: boolean;
 }) => {
   let outputs: BuildOutputs = {};
   if ('handleEach' in build) {
     const files = await glob(build.watch);
     outputs = {
       ...outputs,
-      ...(await runBuildPerEachFile({ build, files, outputMode, outputDir })),
+      ...(await runBuildPerEachFile({ build, files, dryOutput, outputDir })),
     };
   } else {
     const output = await build.handle();
     outputs[output.fileName] = output.content;
-    if (outputMode === 'save-and-return') {
+    if (!dryOutput) {
       await saveOutput({ outputDir, output });
     }
   }
@@ -91,12 +90,12 @@ export const runBuild = async ({
 export const runBuildPerEachFile = async ({
   build,
   files,
-  outputMode,
+  dryOutput,
   outputDir,
 }: {
   build: BuildPerEachFile;
   files: string[];
-  outputMode: OutputMode;
+  dryOutput: boolean;
   outputDir: string;
 }) => {
   let outputs: BuildOutputs = {};
@@ -108,7 +107,7 @@ export const runBuildPerEachFile = async ({
       fileNameWithoutExt: fileName.slice(0, fileName.lastIndexOf('.')),
     });
     outputs[output.fileName] = output.content;
-    if (outputMode === 'save-and-return') {
+    if (!dryOutput) {
       await saveOutput({ outputDir, output });
     }
   }

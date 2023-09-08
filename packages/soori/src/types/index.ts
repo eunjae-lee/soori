@@ -1,12 +1,12 @@
 export type Result<Data = unknown, Err = string> =
   | {
-    ok: true;
-    data: Data;
-  }
+      ok: true;
+      data: Data;
+    }
   | {
-    ok: false;
-    error: Err;
-  };
+      ok: false;
+      error: Err;
+    };
 
 export type BuildOutputs = {
   [fileName: string]: string;
@@ -32,8 +32,6 @@ export type BuildPerEachFile = {
 };
 
 export type Build = BuildAll | BuildPerEachFile;
-
-export type OutputMode = 'save-and-return' | 'return-only';
 
 export type Plugin = {
   name: string;

@@ -3,16 +3,16 @@ import { exists } from '../utils';
 import { filterConfigByChangedFile, resolveConfig } from './config';
 import { error } from '../utils/log';
 import { runPlugins, runPluginsPerEachFile } from './runner';
-import { InternalPlugin, OutputMode } from '../types';
+import { InternalPlugin } from '../types';
 
 export const build = async ({
   cleanUp,
   changedFilePath,
-  outputMode = 'save-and-return',
+  dryOutput = false,
 }: {
   cleanUp?: boolean;
   changedFilePath?: string;
-  outputMode?: OutputMode;
+  dryOutput?: boolean;
 }) => {
   const cleanUpOutputDirs = async (plugins: InternalPlugin[]) => {
     if (!cleanUp) {
@@ -38,13 +38,13 @@ export const build = async ({
     return await runPluginsPerEachFile({
       plugins,
       files: [changedFilePath],
-      outputMode,
+      dryOutput,
     });
   } else {
     await cleanUpOutputDirs(config.plugins);
     return await runPlugins({
       plugins: config.plugins,
-      outputMode,
+      dryOutput,
     });
   }
 };

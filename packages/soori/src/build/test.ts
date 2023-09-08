@@ -10,6 +10,6 @@ export const testPlugin = async (plugin: Plugin) => {
         build: Array.isArray(plugin.build) ? plugin.build : [plugin.build],
       },
     ],
-    outputMode: 'return-only',
+    dryOutput: true,
   });
 };
