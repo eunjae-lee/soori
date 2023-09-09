@@ -13,4 +13,11 @@ const { name, version } = JSON.parse(
 await $`pnpm install`;
 await $`pnpm run build:lib`;
 await $`git add . && git commit -m "chore(${name}): release v${version}"`;
-await $`cd packages/soori && npm publish`;
+
+console.log('Run the following command to publish:');
+console.log('  > cd packages/soori && npm publish');
+console.log('');
+console.log('Run the following command to tag:');
+console.log(
+  `  > git tag ${name}@${version} && git push origin ${name}@${version}`
+);
