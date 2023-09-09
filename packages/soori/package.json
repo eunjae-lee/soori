@@ -11,6 +11,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "cp package.json package.generated.json",
     "dev": "vite",
     "build": "unbuild",
     "build_": "tsc && vite build --config vite.cli.config.ts && vite build --config vite.lib.config.ts --emptyOutDir false",
@@ -30,7 +31,7 @@
       "require": "./dist/vite.cjs",
       "types": "./dist/vite.d.ts"
     },
-    "./package.json": "./package.json",
+    "./package.json": "./package.generated.json",
     "./*": {
       "import": "./submodules/*/index.js"
     }
@@ -44,6 +45,7 @@
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^11.0.0",
+    "execa": "^8.0.1",
     "glob": "^10.3.3",
     "minimatch": "^9.0.3"
   }

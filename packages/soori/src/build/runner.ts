@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { glob } from 'glob';
+import { execaCommand } from 'execa';
 import type {
   Build,
   BuildOutputs,
@@ -8,6 +9,8 @@ import type {
 } from '../types';
 import { info } from '../utils/log';
 import { saveOutput } from './output';
+import { exists } from '../utils';
+import fs from 'node:fs/promises';
 
 export const runPlugins = async ({
   plugins,
@@ -19,7 +22,11 @@ export const runPlugins = async ({
   let outputs: BuildOutputs = {};
   for (const plugin of plugins) {
     info(`Applying plugin \`${plugin.name}\`...`);
-    await plugin.output.onBuildStart?.({ dir: plugin.output.dir });
+    await applyPackageExports(plugin);
+    await plugin.output.onBuildStart?.({
+      dir: plugin.output.dir,
+      execaCommand,
+    });
     for (const build of plugin.build) {
       outputs = {
         ...outputs,
@@ -30,7 +37,7 @@ export const runPlugins = async ({
         })),
       };
     }
-    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir });
+    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir, execaCommand });
   }
   return outputs;
 };
@@ -48,7 +55,11 @@ export const runPluginsPerEachFile = async ({
   for (const plugin of plugins) {
     const { name } = plugin;
     info(`Applying plugin \`${name}\`...`);
-    await plugin.output.onBuildStart?.({ dir: plugin.output.dir });
+    await applyPackageExports(plugin);
+    await plugin.output.onBuildStart?.({
+      dir: plugin.output.dir,
+      execaCommand,
+    });
     for (const build of plugin.build) {
       outputs = {
         ...outputs,
@@ -60,7 +71,7 @@ export const runPluginsPerEachFile = async ({
         })),
       };
     }
-    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir });
+    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir, execaCommand });
   }
   return outputs;
 };
@@ -116,4 +127,23 @@ export const runBuildPerEachFile = async ({
     }
   }
   return outputs;
+};
+
+export const applyPackageExports = async (plugin: InternalPlugin) => {
+  if (!plugin.output.packageExports) {
+    return;
+  }
+  const srcFilePath = `./node_modules/soori/package.json`;
+  const destFilePath = `./node_modules/soori/package.generated.json`;
+  if (!(await exists(destFilePath))) {
+    await fs.cp(srcFilePath, destFilePath);
+  }
+  const pkg = JSON.parse((await fs.readFile(destFilePath)).toString());
+  pkg.exports[`./${plugin.name}`] = plugin.output.packageExports;
+  delete pkg.exports['./*'];
+  pkg.exports['./*'] = {
+    import: './submodules/*/index.js',
+  };
+
+  await fs.writeFile(destFilePath, JSON.stringify(pkg, null, 2));
 };

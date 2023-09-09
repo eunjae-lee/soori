@@ -6,6 +6,7 @@ import path from 'node:path';
 type Options = {
   name?: string;
   watch: string[];
+  objectPerFile?: boolean;
 };
 
 export default (options: Options) =>
@@ -19,11 +20,19 @@ export default (options: Options) =>
           const json = JSON.parse(file.toString());
           return {
             fileName: `${fileNameWithoutExt}.ts`,
-            content: Object.keys(json)
-              .map((key) => {
-                return `export const ${key} = ${JSON.stringify(json[key])};`;
-              })
-              .join('\n\n'),
+            content: options.objectPerFile
+              ? `export const ${fileNameWithoutExt} = ${JSON.stringify(
+                json,
+                null,
+                2
+              )}`
+              : Object.keys(json)
+                .map((key) => {
+                  return `export const ${key} = ${JSON.stringify(
+                    json[key]
+                  )};`;
+                })
+                .join('\n\n'),
           };
         },
       },
@@ -41,7 +50,9 @@ export default (options: Options) =>
                   0,
                   basename.length - ext.length
                 );
-                return `export * as ${fileNameWithoutExt} from './${fileNameWithoutExt}';`;
+                return options.objectPerFile
+                  ? `export * from './${fileNameWithoutExt}'`
+                  : `export * as ${fileNameWithoutExt} from './${fileNameWithoutExt}';`;
               })
               .join('\n'),
           };

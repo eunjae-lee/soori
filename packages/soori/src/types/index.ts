@@ -1,3 +1,5 @@
+import { execaCommand } from 'execa';
+
 export type Result<Data = unknown, Err = string> =
   | {
       ok: true;
@@ -33,10 +35,22 @@ export type BuildPerEachFile = {
 
 export type Build = BuildAll | BuildPerEachFile;
 
+type ExecaCommand = typeof execaCommand;
 export type InternalOutput = {
   dir: string;
-  onBuildStart?: (opts: { dir: string }) => Promise<void>;
-  onBuildEnd?: (opts: { dir: string }) => Promise<void>;
+  packageExports?: Partial<{
+    import: string;
+    require: string;
+    types: string;
+  }>;
+  onBuildStart?: (opts: {
+    dir: string;
+    execaCommand: ExecaCommand;
+  }) => Promise<void>;
+  onBuildEnd?: (opts: {
+    dir: string;
+    execaCommand: ExecaCommand;
+  }) => Promise<void>;
 };
 
 export type Output = Partial<InternalOutput>;

@@ -27,6 +27,13 @@ export const build = async ({
     }
   };
 
+  if (cleanUp) {
+    await fs.cp(
+      `./node_modules/soori/package.json`,
+      `./node_modules/soori/package.generated.json`
+    );
+  }
+
   let resolveConfigResult = await resolveConfig();
   if (!resolveConfigResult.ok) {
     error(resolveConfigResult.error);
