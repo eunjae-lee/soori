@@ -12,6 +12,7 @@
   "author": "Eunjae Lee",
   "license": "MIT",
   "devDependencies": {
+    "tsx": "3.12.8",
     "zx": "7.2.3"
   }
 }
