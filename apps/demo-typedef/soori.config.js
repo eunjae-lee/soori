@@ -12,7 +12,6 @@ export default defineConfig({
       }),
       name: 'my-jsons',
       output: {
-        // dir: 'node_modules/my-jsons',
         packageExports: {
           import: './submodules/my-jsons/index.js',
           types: './submodules/my-jsons/types/index.d.ts',
