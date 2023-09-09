@@ -73,7 +73,7 @@ function1() {
 }
 ```
 
-Instead of that, what if you could like this?
+Instead of that, what if you could do like this?
 
 ```js
 import { function1 } from 'soori/my-nextjs-apis';

@@ -8,7 +8,6 @@ description: How to write Soori config file
 This is an example config:
 
 ```js title="soori.config.js"
-// soori.config.js
 import fs from 'node:fs/promises';
 
 export default {
@@ -43,8 +42,7 @@ of it. And `handle` function is supposed to return an object of `fileName` and
 Let's assume you are using Soori with the vite plugin. What if you want to
 automatically update this library when `package.json` file changes?
 
-```js title="soori.config.js" ins={6}
-// soori.config.js
+```js title="soori.config.js" ins={5}
 plugins: [
   {
     name: 'ver',
