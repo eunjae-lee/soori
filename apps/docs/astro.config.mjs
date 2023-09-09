@@ -13,8 +13,8 @@ export default defineConfig({
 				{
 					label: 'Guides',
 					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', link: '/guides/example/' },
+						{ label: 'Why compile-time library?', link: '/guides/why/' },
+						{ label: 'Getting Started', link: '/guides/getting-started/' },
 					],
 				},
 				{
