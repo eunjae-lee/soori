@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { vite as soori } from 'soori';
-import path from 'path';
+import { soori } from 'soori/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({

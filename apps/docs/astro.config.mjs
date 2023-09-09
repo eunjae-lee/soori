@@ -13,14 +13,15 @@ export default defineConfig({
 				{
 					label: 'Guides',
 					items: [
-						{ label: 'Why compile-time library?', link: '/guides/why/' },
+						{ label: 'Why Compile-Time Library?', link: '/guides/why/' },
 						{ label: 'Getting Started', link: '/guides/getting-started/' },
+						{ label: 'Configuration', link: '/guides/config/' },
 					],
 				},
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
+				// {
+				// 	label: 'Reference',
+				// 	autogenerate: { directory: 'reference' },
+				// },
 			],
 		}),
 	],

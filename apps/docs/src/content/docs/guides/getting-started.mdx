@@ -1,0 +1,60 @@
+---
+title: Getting Started
+description: Getting started with Soori
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Installation
+
+<Tabs>
+<TabItem label="npm">
+
+```sh
+npm install soori
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```sh
+pnpm install soori
+```
+
+</TabItem>
+<TabItem label="Yarn">
+
+```sh
+yarn add soori
+```
+
+</TabItem>
+</Tabs>
+
+## Setup
+
+Add a script to your `package.json` like the following:
+
+```js
+"scripts": {
+  "build:soori": "soori build"
+}
+```
+
+Create a config file named `soori.config.js` in the root dir.
+
+### vite
+
+If your project is using vite, you don't have to run `soori build` manually. Soori provides a vite plugin.
+
+```js
+// Your vite config
+
+import { defineConfig } from 'vite';
+import { soori } from 'soori/vite';
+
+export default defineConfig({
+  plugins: [soori()],
+});
+```
+
