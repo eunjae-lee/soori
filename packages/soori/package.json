@@ -1,7 +1,7 @@
 {
   "name": "soori",
   "description": "Soori allows you to build compile-time libraries.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "bin": {
     "soori": "./cli.js"
