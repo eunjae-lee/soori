@@ -18,7 +18,7 @@ importers:
   apps/demo:
     dependencies:
       '@soori/plugin-json':
-        specifier: 0.0.0
+        specifier: '*'
         version: link:../../packages/plugin-json
       react:
         specifier: ^18.2.0
