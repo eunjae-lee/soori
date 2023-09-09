@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { glob } from 'glob';
-import { execaCommand } from 'execa';
+import { execaCommand, type Options } from 'execa';
 import type {
   Build,
   BuildOutputs,
@@ -11,6 +11,16 @@ import { info } from '../utils/log';
 import { saveOutput } from './output';
 import { exists } from '../utils';
 import fs from 'node:fs/promises';
+
+const getExecaCommand = (dir: string) => {
+  const cmd = (command: string, options: Options = {}) => {
+    return execaCommand(command, {
+      cwd: dir,
+      ...options,
+    });
+  };
+  return cmd as typeof execaCommand;
+};
 
 export const runPlugins = async ({
   plugins,
@@ -25,7 +35,7 @@ export const runPlugins = async ({
     await applyPackageExports(plugin);
     await plugin.output.onBuildStart?.({
       dir: plugin.output.dir,
-      execaCommand,
+      execaCommand: getExecaCommand(plugin.output.dir),
     });
     for (const build of plugin.build) {
       outputs = {
@@ -37,7 +47,10 @@ export const runPlugins = async ({
         })),
       };
     }
-    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir, execaCommand });
+    await plugin.output.onBuildEnd?.({
+      dir: plugin.output.dir,
+      execaCommand: getExecaCommand(plugin.output.dir),
+    });
   }
   return outputs;
 };
@@ -58,7 +71,7 @@ export const runPluginsPerEachFile = async ({
     await applyPackageExports(plugin);
     await plugin.output.onBuildStart?.({
       dir: plugin.output.dir,
-      execaCommand,
+      execaCommand: getExecaCommand(plugin.output.dir),
     });
     for (const build of plugin.build) {
       outputs = {
@@ -71,7 +84,10 @@ export const runPluginsPerEachFile = async ({
         })),
       };
     }
-    await plugin.output.onBuildEnd?.({ dir: plugin.output.dir, execaCommand });
+    await plugin.output.onBuildEnd?.({
+      dir: plugin.output.dir,
+      execaCommand: getExecaCommand(plugin.output.dir),
+    });
   }
   return outputs;
 };
