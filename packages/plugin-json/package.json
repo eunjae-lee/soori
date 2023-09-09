@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/glob": "8.1.0",
     "@types/node": "20.5.1",
-    "soori": "0.0.3",
+    "soori": "^0.0.3",
     "typescript": "5.0.2",
     "vite": "4.4.9",
     "vite-plugin-dts": "3.5.2",
