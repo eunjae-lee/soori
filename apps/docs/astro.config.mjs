@@ -7,7 +7,7 @@ export default defineConfig({
 		starlight({
 			title: 'Soori 🪄',
 			social: {
-				github: 'https://github.com/withastro/starlight',
+				github: 'https://github.com/eunjae-lee/soori',
 			},
 			sidebar: [
 				{
