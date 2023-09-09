@@ -14,7 +14,6 @@
     "prepare": "cp package.json package.generated.json",
     "dev": "vite",
     "build": "unbuild",
-    "build_": "tsc && vite build --config vite.cli.config.ts && vite build --config vite.lib.config.ts --emptyOutDir false",
     "preview": "vite preview"
   },
   "main": "./dist/index.cjs",
