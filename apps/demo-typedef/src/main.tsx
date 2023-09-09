@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { cat1 } from 'my-jsons';
+import { cat1 } from 'soori/my-jsons';
 console.log({ cat1 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
