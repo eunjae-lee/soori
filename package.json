@@ -6,8 +6,12 @@
   "type": "module",
   "scripts": {
     "dev:demo": "pnpm -F demo run dev",
-    "build:lib": "pnpm -F soori run build"
+    "build:lib": "pnpm -F soori run build",
+    "release": "./scripts/release.ts"
   },
   "author": "Eunjae Lee",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "zx": "7.2.3"
+  }
 }
