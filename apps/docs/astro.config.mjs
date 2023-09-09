@@ -16,6 +16,7 @@ export default defineConfig({
 						{ label: 'Why Compile-Time Library?', link: '/guides/why/' },
 						{ label: 'Getting Started', link: '/guides/getting-started/' },
 						{ label: 'Configuration', link: '/guides/config/' },
+						{ label: 'Examples', link: '/guides/examples/' },
 					],
 				},
 				// {

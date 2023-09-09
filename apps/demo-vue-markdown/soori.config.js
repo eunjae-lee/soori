@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     definePlugin({
       name: 'markdownInVue',
-      outputDir: 'src/markdownInVue',
+      output: { dir: 'src/markdownInVue' },
       build: [
         {
           watch: ['src/md/*.md'],
