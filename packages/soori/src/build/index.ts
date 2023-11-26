@@ -1,5 +1,4 @@
 export * from './build';
 export * from './config';
-export * from './runner';
+export * from './runPlugins';
 export * from './output';
-export * from './test';

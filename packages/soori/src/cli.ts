@@ -8,9 +8,13 @@ const createProgram = () => {
 
   program
     .command('build')
-    .description('build desc')
-    .action(async () => {
-      await build({ cleanUp: true });
+    .option('--no-clean', 'Do not clean the output directory')
+    .option('-D, --dry-run', 'Dry run')
+    .action(async (_, options) => {
+      await build({
+        cleanUp: !options.noClean,
+        dryRun: Boolean(options.dryRun),
+      });
     });
 
   return program;

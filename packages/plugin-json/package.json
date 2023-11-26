@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "vitest --run",
-    "test:watch": "vitest",
+    "test": "vitest",
     "build": "tsc && unbuild",
     "preview": "vite preview"
   },
@@ -22,7 +21,7 @@
   "devDependencies": {
     "@types/glob": "8.1.0",
     "@types/node": "20.5.1",
-    "soori": "^0.0.3",
+    "soori": "^0.0.4",
     "typescript": "5.0.2",
     "unbuild": "2.0.0",
     "vite": "4.4.9",

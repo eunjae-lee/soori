@@ -1,58 +1,40 @@
-import { testPlugin } from 'soori';
+import { testPlugins } from 'soori';
 import path from 'node:path';
 import json from '..';
 
 describe('json', () => {
-  it('runs plugins correctly', async () => {
-    const outputs = await testPlugin({
-      name: 'test-plugin',
-      build: {
-        handle: () => {
-          return {
-            fileName: 'index.js',
-            content: 'export const name = "Eunjae"',
-          };
-        },
-      },
+  it('exports all from json files', async () => {
+    const outputs = await testPlugins({
+      plugins: [
+        json({
+          output: 'test-plugin',
+          watch: [path.resolve(__dirname, 'fixture1') + '/*.json'],
+        }),
+      ],
     });
     expect(outputs).toMatchInlineSnapshot(`
       {
-        "index.js": "export const name = \\"Eunjae\\"",
+        "node_modules/soori/submodules/test-plugin/index.ts": "export * from './test2';
+
+      export * from './test1';",
+        "node_modules/soori/submodules/test-plugin/test1.ts": "export const hello = \\"world1\\";",
+        "node_modules/soori/submodules/test-plugin/test2.ts": "export const hello = \\"world2\\";",
       }
     `);
   });
 
-  it('generates jsons correctly', async () => {
-    const outputs = await testPlugin(
-      json({
-        watch: [path.resolve(__dirname, 'fixture1') + '/*.json'],
-      })
-    );
-    expect(outputs).toMatchInlineSnapshot(`
-      {
-        "index.ts": "export * as test2 from './test2';
-      export * as test1 from './test1';",
-        "test1.ts": "export const hello = \\"world1\\";",
-        "test2.ts": "export const hello = \\"world2\\";",
-      }
-    `);
-  });
-
-  it('generates nested jsons correctly', async () => {
-    const outputs = await testPlugin(
-      json({
-        watch: [path.resolve(__dirname, 'fixture2') + '/**/*.json'],
-      })
-    );
-    expect(outputs).toMatchInlineSnapshot(`
-      {
-        "index.ts": "export * as test2 from './test2';
-      export * as test1 from './test1';
-      export * as test3 from './test3';",
-        "test1.ts": "export const hello = \\"world1\\";",
-        "test2.ts": "export const hello = \\"world2\\";",
-        "test3.ts": "export const hello = \\"world3\\";",
-      }
-    `);
+  it('exports as each module from json files', async () => {
+    const outputs = await testPlugins({
+      plugins: [
+        json({
+          output: 'test-plugin',
+          watch: [path.resolve(__dirname, 'fixture1') + '/*.json'],
+          objectPerFile: true,
+        }),
+      ],
+    });
+    const entry = outputs['node_modules/soori/submodules/test-plugin/index.ts'];
+    expect(entry).toContain('export * as test1');
+    expect(entry).toContain('export * as test2');
   });
 });

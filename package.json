@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "test": "pnpm -F soori run test",
     "dev:docs": "pnpm -F docs run dev",
     "dev:demo": "pnpm -F demo run dev",
     "build:lib": "pnpm -F soori run build",

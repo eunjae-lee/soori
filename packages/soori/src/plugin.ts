@@ -1,3 +1,3 @@
 import { Plugin } from './types';
 
-export const definePlugin = (plugin: Plugin) => plugin;
+export const defineSooriPlugin = (plugin: Plugin) => plugin;

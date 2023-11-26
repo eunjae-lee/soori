@@ -1,68 +1,80 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { loadConfig as _loadConfig } from 'c12';
 import { minimatch } from 'minimatch';
-import type {
-  Build,
-  BuildPerEachFile,
-  InternalConfig,
-  Plugin,
-  Result,
-} from '../types';
+import type { Config, InternalConfig, InternalPlugin, Result } from '../types';
+import { submodule } from './output';
 
-export const resolveConfig = async (): Promise<Result<InternalConfig>> => {
-  const files = await fs.readdir(process.cwd());
-  const filename = [/*"soori.config.ts",*/ 'soori.config.js'].find((filename) =>
-    files.includes(filename)
-  );
-  if (filename === undefined) {
+export const loadConfig = async (
+  cwd: string
+): Promise<Result<InternalConfig>> => {
+  const { config } = await _loadConfig<Config>({
+    cwd,
+    name: 'soori',
+  });
+  if (!config) {
     return {
       ok: false,
-      error:
-        'Configuration missing. Create `soori.config.ts` or `soori.config.js`.',
+      error: 'Configuration missing. Create `soori.config.js`.',
     };
   }
 
-  let config = (await import(path.resolve(filename))).default;
-  config.plugins.forEach((plugin: Plugin) => {
-    const pluginOutputDir = `./node_modules/soori/submodules/${plugin.name}`;
-    if (!plugin.output) {
-      plugin.output = {};
-    }
-    plugin.output.dir = path.resolve(plugin.output.dir ?? pluginOutputDir);
-
-    if (!Array.isArray(plugin.build)) {
-      plugin.build = [plugin.build];
-    }
-  });
   return {
     ok: true,
-    data: config,
+    data: resolveConfig(config),
   };
 };
 
-export const filterConfigByChangedFile = (
-  config: InternalConfig,
-  changedFilePath: string
-): InternalConfig<BuildPerEachFile> => {
-  const isMatchedBuild = (build: Build): build is BuildPerEachFile => {
-    if ('handleEach' in build) {
-      return build.watch.some((pattern) => minimatch(changedFilePath, pattern));
-    } else {
-      return false;
-    }
+export const resolveConfig = (config: Config) => {
+  const internalConfig: InternalConfig = {
+    plugins: config.plugins.map((plugin) => {
+      const entry =
+        typeof plugin.entry === 'function'
+          ? { build: plugin.entry, ext: 'ts' }
+          : {
+              build:
+                plugin.entry?.build ??
+                (({
+                  filenamesWithoutExt,
+                }: {
+                  filenames: string[];
+                  filenamesWithoutExt: string[];
+                }) => {
+                  return filenamesWithoutExt
+                    .map(
+                      (filenameWithoutExt) =>
+                        `export * from './${filenameWithoutExt}'`
+                    )
+                    .join('\n');
+                }),
+              ext: plugin.entry?.ext ?? 'ts',
+            };
+      const output =
+        typeof plugin.output === 'string'
+          ? submodule({ name: plugin.output, ext: entry.ext })
+          : plugin.output;
+
+      return {
+        ...plugin,
+        entry,
+        output,
+      };
+    }),
   };
 
-  let filteredConfig = {
-    ...config,
-    plugins: config.plugins
-      .map((plugin) => {
-        return {
-          ...plugin,
-          build: plugin.build.filter(isMatchedBuild),
-        };
-      })
-      .filter((plugin) => plugin.build.length > 0),
-  };
+  return internalConfig;
+};
 
-  return filteredConfig;
+export const filterPluginsByChangedFile = ({
+  plugins,
+  changedFilename,
+}: {
+  plugins: InternalPlugin[];
+  changedFilename?: string;
+}) => {
+  if (!changedFilename) {
+    return plugins;
+  }
+
+  return plugins.filter((plugin) =>
+    plugin.watch.some((pattern) => minimatch(changedFilename, pattern))
+  );
 };

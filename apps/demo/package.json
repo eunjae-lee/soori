@@ -11,10 +11,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@soori/plugin-json": "*",
+    "@soori/plugin-json": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "soori": "*"
+    "soori": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

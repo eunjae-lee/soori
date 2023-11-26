@@ -10,13 +10,10 @@ export const soori = (): Plugin => {
     },
     configureServer: (server) => {
       const listener = async (filePath: string) => {
-        if (filePath.startsWith(process.cwd())) {
-          await build({
-            changedFilePath: filePath.slice(process.cwd().length + 1),
-          });
-        } else {
-          // don't know what to do, probably ignore it.
-        }
+        await build({
+          cleanUp: false,
+          changedFilePath: filePath,
+        });
       };
 
       server.watcher.on('add', listener);

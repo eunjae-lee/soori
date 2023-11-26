@@ -1,3 +1,3 @@
 import { Config } from './types';
 
-export const defineConfig = (config: Config) => config;
+export const defineSooriConfig = (config: Config) => config;

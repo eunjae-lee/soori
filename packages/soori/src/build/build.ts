@@ -1,59 +1,72 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { exists } from '../utils';
-import { filterConfigByChangedFile, resolveConfig } from './config';
+import { filterPluginsByChangedFile, loadConfig } from './config';
 import { error } from '../utils/log';
-import { runPlugins, runPluginsPerEachFile } from './runner';
+import { runPlugins } from './runPlugins';
 import { InternalPlugin } from '../types';
 
 export const build = async ({
   cleanUp,
   changedFilePath,
-  dryOutput = false,
+  dryRun = false,
+  cwd = process.cwd(),
 }: {
-  cleanUp?: boolean;
+  cleanUp: boolean;
   changedFilePath?: string;
-  dryOutput?: boolean;
+  dryRun?: boolean;
+  cwd?: string;
 }) => {
-  const prepareOutputDirs = async (plugins: InternalPlugin[]) => {
-    for (const plugin of plugins) {
-      if (await exists(plugin.output.dir)) {
-        if (cleanUp) {
-          await fs.rm(plugin.output.dir, { recursive: true, force: true });
-          await fs.mkdir(plugin.output.dir, { recursive: true });
-        }
-      } else {
-        await fs.mkdir(plugin.output.dir, { recursive: true });
-      }
-    }
-  };
+  await prepareGeneratedPackageJson(cwd, cleanUp);
 
-  if (cleanUp) {
-    await fs.cp(
-      `./node_modules/soori/package.json`,
-      `./node_modules/soori/package.generated.json`
-    );
-  }
-
-  let resolveConfigResult = await resolveConfig();
-  if (!resolveConfigResult.ok) {
-    error(resolveConfigResult.error);
+  let loadedConfig = await loadConfig(cwd);
+  if (!loadedConfig.ok) {
+    error(loadedConfig.error);
     process.exit(1);
   }
-  const config = resolveConfigResult.data;
 
-  if (changedFilePath) {
-    const plugins = filterConfigByChangedFile(config, changedFilePath).plugins;
-    await prepareOutputDirs(plugins);
-    return await runPluginsPerEachFile({
-      plugins,
-      files: [changedFilePath],
-      dryOutput,
-    });
-  } else {
-    await prepareOutputDirs(config.plugins);
-    return await runPlugins({
-      plugins: config.plugins,
-      dryOutput,
-    });
-  }
+  const config = loadedConfig.data;
+  const plugins = filterPluginsByChangedFile({
+    plugins: config.plugins,
+    changedFilename: changedFilePath?.slice(cwd.length + 1),
+  });
+
+  await prepareOutputDirs(cwd, cleanUp, plugins);
+  await runPlugins({
+    cwd,
+    plugins,
+    dryRun,
+    changedFilePath,
+  });
 };
+
+async function prepareOutputDirs(
+  cwd: string,
+  cleanUp: boolean,
+  plugins: InternalPlugin[]
+) {
+  for (const plugin of plugins) {
+    const dir = path.resolve(cwd, plugin.output.dir);
+    if (await exists(dir)) {
+      if (cleanUp) {
+        await fs.rm(dir, { recursive: true, force: true });
+        await fs.mkdir(dir, { recursive: true });
+      }
+    } else {
+      await fs.mkdir(dir, { recursive: true });
+    }
+  }
+}
+
+async function prepareGeneratedPackageJson(cwd: string, cleanUp: boolean) {
+  const src = path.resolve(cwd, 'node_modules', 'soori', 'package.json');
+  const dest = path.resolve(
+    cwd,
+    'node_modules',
+    'soori',
+    'package.generated.json'
+  );
+  if (cleanUp || !(await exists(dest))) {
+    await fs.cp(src, dest);
+  }
+}
