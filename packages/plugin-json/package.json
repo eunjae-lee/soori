@@ -1,6 +1,6 @@
 {
   "name": "@soori/plugin-json",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/glob": "8.1.0",
     "@types/node": "20.5.1",
-    "soori": "^0.0.4",
+    "soori": "^0.0.5",
     "typescript": "5.0.2",
     "unbuild": "2.0.0",
     "vite": "4.4.9",
