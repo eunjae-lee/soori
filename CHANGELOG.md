@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/eunjae-lee/soori/compare/plugin-json@0.0.1...v0.0.5)
+
+### 🚀 Enhancements
+
+- Rewrite from scratch ([004405c](https://github.com/eunjae-lee/soori/commit/004405c))
+
+### 📖 Documentation
+
+- Update the docs ([af087ee](https://github.com/eunjae-lee/soori/commit/af087ee))
+- Update the docs ([7246863](https://github.com/eunjae-lee/soori/commit/7246863))
+- Update the docs ([d02ac8f](https://github.com/eunjae-lee/soori/commit/d02ac8f))
+- Update the docs ([b5954f1](https://github.com/eunjae-lee/soori/commit/b5954f1))
+- Update the docs ([39704f4](https://github.com/eunjae-lee/soori/commit/39704f4))
+- Add expressive-code ([bf2773d](https://github.com/eunjae-lee/soori/commit/bf2773d))
+
+### ❤️ Contributors
+
+- Eunjae Lee <hey@eunjae.dev>
+
 ## v0.0.4
 
 
