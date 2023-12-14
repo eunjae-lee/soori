@@ -78,7 +78,7 @@ console.log('# my jsons', { abc, def });
 
 ### How does it work?
 
-That `build` function runs on each of those files. In case of `abc.js`, the parameters to the `build` function will be:
+That `build` function runs on each of those files. In case of `abc.json`, the parameters to the `build` function will be:
 
 - `filePath`: `src/data/abc.json`
 - `filenameWithoutExt`: `abc`
